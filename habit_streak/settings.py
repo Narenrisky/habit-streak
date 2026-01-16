@@ -9,7 +9,8 @@ https://docs.djangoproject.com/en/6.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.0/ref/settings/
 """
-
+import dj_database_url
+import os
 from pathlib import Path
 
 from django.conf.global_settings import STATICFILES_DIRS
@@ -78,12 +79,10 @@ WSGI_APPLICATION = 'habit_streak.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
+DATABASE_URL = 'postgresql://habituser:PP7iPqpGm0lGvheZ9lgd4c9zLbwaNNJM@dpg-d5l818q4d50c73e1hk6g-a.oregon-postgres.render.com/habitstreak'
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    'default': dj_database_url.parse(os.environ.get('DATABASE_URL'))
 }
 
 
