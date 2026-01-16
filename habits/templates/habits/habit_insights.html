@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ habit.name }}</title>
+    <style>
+        body { font-family: Arial; padding: 16px; }
+        .card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 12px;
+        }
+        .value {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        a { text-decoration: none; color: blue; }
+    </style>
+</head>
+<body>
+
+<a href="{% url 'habit_detail' habit.id %}">← Back</a>
+
+<h2>{{ habit.name }} - Insights</h2>
+
+<div class="card">
+    <div>🔥 Current Streak</div>
+    <div class="value">{{ current_streak }}</div>
+</div>
+
+<div class="card">
+    <div>🏆 Longest Streak Ever</div>
+    <div class="value">{{ longest_streak }}</div>
+</div>
+
+<div class="card">
+    <div>✅ Total Completions</div>
+    <div class="value">{{ total_completions }}</div>
+</div>
+
+<div class="card">
+    <div>📅 Weekly Consistency</div>
+    <div class="value">{{ weekly_consistency }}%</div>
+</div>
+    
+</body>
+</html>

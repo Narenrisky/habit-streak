@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Delete Habit</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body { font-family: Arial; padding: 16px; }
+        .danger { color: red; }
+        button { padding: 8px 12px; margin-right: 8px; }
+    </style>
+</head>
+<body>
+
+<h2 class="danger">Delete Habit</h2>
+
+<p>
+    Are you sure you want to delete
+    <strong>{{ habit.name }}</strong>?
+</p>
+
+<p class="danger">
+    This will permanently delete all its history.
+</p>
+
+<form method="post" action="{% url 'delete_habit' habit.id %}">
+    {% csrf_token %}
+    <button type="submit">Yes, delete</button>
+    <a href="{% url 'habit_detail' habit.id %}">Cancel</a>
+</form>
+
+</body>
+</html>

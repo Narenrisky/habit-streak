@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ habit.name }}</title>
+    <style>
+        body { font-family: Arial; padding: 16 px;}
+        .day {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+        }
+        button {
+            padding: 6px 10px;
+        }
+        a {
+            text-decoration: none;
+            color: blue;
+        }
+    </style>
+</head>
+<body>
+
+<a href="{% url 'home' %}">← Back</a>
+
+<h2>{{ habit.name }}</h2>
+<p>Current Streak:
+<strong>{{ streak }}</strong>
+{% if streak >= 3 %}🔥{% endif %}
+{% if streak >= 7 %}🔥🔥{% endif %}
+{% if streak >= 14 %}🔥🔥🔥{% endif %}
+</p>
+
+<p>
+    <a href="{% url 'habit_insights' habit.id %}">
+        View Insights →
+    </a>
+</p>
+
+<h3>This week</h3>
+<div style="display: flex; justify-content: space-between;">
+{% for day in week %}
+  <div style="text-align: center;">
+    <div style="font-size: 12px;">
+        {{ day.date|date:"D"}}
+    </div>
+    <div style="font-size: 22px;">
+        {% if day.done %}✅{% else %}⬜{% endif %}
+    </div>
+  </div>
+{% endfor %}
+</div>
+
+
+<h3>Last 14 Days</h3>
+
+{% for day in days %}
+<div class="day">
+    <div>{{ day.date }}</div>
+    
+    <form action="{% url 'toggle_habit' habit.id %}" method="post">
+        {% csrf_token %}
+        <input type="hidden" name="date" value="{{ day.date|date:'Y-m-d' }}">
+        <button>
+            {% if day.done %}✅{% else %}⬜{% endif %}
+        </button>
+    </form>
+</div>
+{% endfor %}
+
+<hr>
+
+<a href="{% url 'confirm_delete_habit' habit.id %}" style="color: red;">
+    Delete this habit
+</a>
+
+</body>
+</html>

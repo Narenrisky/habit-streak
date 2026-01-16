@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sign Up</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body { font-family: Arial; padding: 16px; }
+        input { width: 100%; padding: 8px; margin-bottom: 10px; }
+        button { width: 100%; padding: 10px; }
+        .error { color: red; font-size: 14px; }
+    </style>
+</head>
+<body>
+
+<h2>Create Account</h2>
+
+<form method="post">
+    {% csrf_token %}
+
+    <label>Username</label>
+    {{ form.username }}
+    {% for error in form.username.errors %}
+        <div class="error">{{ error }}</div>
+    {% endfor %}
+
+    <label>Password</label>
+    {{ form.password1 }}
+    {% for error in form.password1.errors %}
+        <div class="error">{{ error }}</div>
+    {% endfor %}
+
+    <label>Confirm Password</label>
+    {{ form.password2 }}
+    {% for error in form.password2.errors %}
+        <div class="error">{{ error }}</div>
+    {% endfor %}
+
+    <button type="submit">Sign Up</button>
+</form>
+
+<p>
+    Already have an account?
+    <a href="{% url 'login' %}">Login</a>
+</p>
+
+</body>
+</html>

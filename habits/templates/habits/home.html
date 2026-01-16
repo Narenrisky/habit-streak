@@ -1,0 +1,97 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Habit Streak</title>
+    <link rel="manifest" href="{% static 'manifest.json' %}">
+    <meta name="theme-color" content="#ffffff">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <style>
+        body { font-family: Arial; padding: 16px;}
+        .habit {display: flex; justify-content: space-between; margin-bottom: 12px; }
+        button { padding: 8px 12px; }
+        input { padding: 8px; width: 100%; margin-bottom: 8px;}
+        .error { color: red; font-size: 14px;}
+    </style>
+</head>
+<body>
+
+<div style="margin-bottom: 16px;">
+    {% if user.is_authenticated %}
+        Logged in as <strong>{{ user.username }}</strong>
+        |
+        <form action="{% url 'logout' %}" method="post" style="display:inline;">
+            {% csrf_token %}
+            <button type="submit" style="background:none;border:none;color:blue;cursor:pointer;">
+                Logout
+            </button>
+        </form>
+    {% else %}
+        <a href="{% url 'login' %}">Login</a>
+        <a href="{% url 'signup' %}">Sign up</a>
+    {% endif %}
+</div>
+
+
+<h2>My Habits</h2>
+<form method="post">
+    {% csrf_token %}
+    {{ form.name }}
+    {% if form.name.errors %}
+      <div class="error">{{ form.name.errors.0 }}</div>
+    {% endif %}
+    <button type="submit">Add Habit</button>
+</form>
+
+<hr>
+
+{% for item in habit_data %}
+<div class="habit" data-habit-id="{{ item.habit.id }}">
+    <div>
+        <strong>
+            <a href="{% url 'habit_detail' item.habit.id %}">
+                {{ item.habit.name }}
+            </a>
+        </strong><br>
+        🔥 Streak: {{ item.streak }}
+    </div>
+    <form action="{% url 'toggle_habit' item.habit.id %}" method="post">
+        {% csrf_token %}
+        <input type="date" name="date" value="{% now 'Y-m-d' %}">
+        <button type="submit">
+            <span class="status-icon">
+                {% if item.done_today %}✅{% else %}⬜{% endif %}
+            </span>
+        </button>
+    </form>
+</div>
+{% empty %}
+<p>No habits yet. Add one above 👆</p>
+{% endfor %}
+
+<script>
+document.querySelectorAll('.habit input[type="date"]').forEach(input => {
+    input.addEventListener('change', async function () {
+        const habitDiv = this.closest('.habit');
+        const habitId = habitDiv.dataset.habitId;
+        const selectedDate = this.value;
+        const icon = habitDiv.querySelector('.status-icon');
+
+        const response = await fetch(
+            `/habit/${habitId}/status/?date=${selectedDate}`
+        );
+        const data = await response.json();
+
+        icon.textContent = data.done ? '✅' : '⬜';
+    });
+});
+</script>
+<script>
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register("{% static 'service-worker.js' %}");
+}
+</script>
+
+</body>
+</html>
